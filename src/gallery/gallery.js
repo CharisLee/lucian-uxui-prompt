@@ -74,6 +74,14 @@
       hintCode: function (n) { return '코드 ' + n + '자 · 실행 코드 전체 포함'; },
       areaPrompt: '적용 프롬프트', areaCode: '요소 코드',
       guideKick: '적용 방법', guideTitle: '이렇게 가져가세요',
+      skillBtn: '에이전트 스킬', skillBtnLong: '에이전트 스킬로 쓰기 →', skillTitle: 'AI 에이전트에게 맡기기',
+      skillLead: 'lucian-uxui 스킬을 설치하면 Claude Code, Codex 같은 코딩 에이전트가 이 갤러리에서 맞는 요소를 찾아 프로젝트에 옮겨 넣습니다.',
+      skillAny: '모든 에이전트', skillPlugin: 'Claude Code 플러그인', copyCmd: '명령 복사', tCmdCopied: '복사했어요',
+      useAsk: '말로 부탁하기', useAskEx: '“lucian-uxui 스킬로 요금제 토글이랑 FAQ 넣어줘”',
+      usePick: '번호로 고르기', usePickEx: '“lucian-uxui 스킬로 056번 요소 넣어줘”',
+      useCall: '바로 부르기', useCallEx: 'Claude Code <code>/lucian-uxui</code> (플러그인은 <code>/lucian-uxui:lucian-uxui</code>) · Codex <code>$lucian-uxui</code>',
+      skillMore: '자세히 보기', skillLine: '에이전트 스킬로 부르기', skillHow: '설치 방법',
+      skillAskId: function (id) { return 'lucian-uxui 스킬로 ' + id + '번 요소 넣어줘'; },
       guideSteps: [
         '<b>보고, 직접 눌러 보세요.</b> 요소는 화면에 보이면 스스로 조작 시연을 반복합니다. 요소를 직접 누르거나 키보드로 들어가면 시연이 멈추고, 손을 떼고 잠시 지나면 처음부터 다시 시작합니다.',
         '<b>프롬프트 복사</b>에는 요소의 실행 코드 전체와 적용 지침이 들어 있습니다. 프로젝트의 AI 도구에 붙여넣고 삽입 위치만 채우면 됩니다.',
@@ -112,6 +120,14 @@
       hintCode: function (n) { return 'Code · ' + n + ' characters · the full working element'; },
       areaPrompt: 'Prompt', areaCode: 'Element code',
       guideKick: 'How to use', guideTitle: 'Bring it into your project',
+      skillBtn: 'Agent skill', skillBtnLong: 'Use it from an AI agent →', skillTitle: 'Let an AI agent do it',
+      skillLead: 'Install the lucian-uxui skill and coding agents like Claude Code and Codex find the right elements in this gallery and port them into your project.',
+      skillAny: 'Any agent', skillPlugin: 'Claude Code plugin', copyCmd: 'Copy command', tCmdCopied: 'Copied',
+      useAsk: 'Ask in words', useAskEx: '“Add a pricing toggle and an FAQ with the lucian-uxui skill.”',
+      usePick: 'Pick by number', usePickEx: '“Use the lucian-uxui skill to add element #056.”',
+      useCall: 'Call it directly', useCallEx: 'Claude Code <code>/lucian-uxui</code> (as a plugin, <code>/lucian-uxui:lucian-uxui</code>) · Codex <code>$lucian-uxui</code>',
+      skillMore: 'Read more', skillLine: 'Call it from an agent', skillHow: 'How to install',
+      skillAskId: function (id) { return 'Use the lucian-uxui skill to add element #' + id; },
       guideSteps: [
         '<b>Watch, then try it.</b> Each element plays a short demo on a loop while it is on screen. Tap it or tab into it and the demo stops so you can use it yourself; leave it for a moment and it starts over.',
         '<b>Copy prompt</b> gives you the element’s full working code plus instructions. Paste it into your project’s AI tool and fill in where it should go.',
@@ -1152,6 +1168,7 @@
     $('#pr-num').textContent = ITEMS[i].id;
     $('#pr-cat').textContent = c.category;
     $('#pr-title').textContent = c.title;
+    $('#pr-skill').textContent = T[lang].skillAskId(ITEMS[i].id);
     openDialog(dlgPrompt);
     setTab('prompt');
   }
@@ -1179,6 +1196,27 @@
     d.addEventListener('close', syncAll);
   });
   $('#to-guide').addEventListener('click', function () { openDialog($('#dlg-guide')); });
+  // 에이전트 스킬 안내: 적용 방법 대화상자를 열고 스킬 블록으로 바로 갑니다
+  function openSkill() {
+    if (dlgPrompt.open) closeDialog(dlgPrompt);
+    openDialog($('#dlg-guide'));
+    var sec = $('#guide-skill');
+    sec.scrollIntoView({ block: 'start' });
+    sec.focus({ preventScroll: true });
+  }
+  $$('#to-skill, [data-open-skill]').forEach(function (b) { b.addEventListener('click', openSkill); });
+  // 명령 한 줄 복사: 버튼 옆 code의 글을 복사하고, 안 되면 그 글을 선택해 둡니다
+  $$('[data-copy]').forEach(function (b) {
+    b.addEventListener('click', function () {
+      var code = b.parentNode.querySelector('code');
+      copyText(code.textContent).then(function (ok) {
+        if (ok) { markDone(b); toast(t('tCmdCopied')); return; }
+        var sel = window.getSelection();
+        sel.removeAllRanges(); sel.selectAllChildren(code);
+        toast(t('tSelect'));
+      });
+    });
+  });
 
   /* ---------- 릴스: 한 화면에 요소 하나, 위아래로 넘깁니다 ---------- */
   var reel = $('#reel');

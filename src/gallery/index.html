@@ -35,6 +35,7 @@ r.setAttribute('lang',l);if(l==='en')r.classList.add('i18n-wait')})();
       <span class="g-brand-s">UX/UI Prompt</span>
     </a>
     <div class="g-head-r">
+      <button class="g-link g-link--skill" type="button" id="to-skill" data-i18n="skillBtn">에이전트 스킬</button>
       <button class="g-link" type="button" id="to-guide" data-i18n="guideBtn">적용 방법</button>
       <div class="g-lang" role="group" aria-label="언어" data-i18n-attr="aria-label:langGroup">
         <span class="g-lang-pill" aria-hidden="true"></span>
@@ -53,6 +54,7 @@ r.setAttribute('lang',l);if(l==='en')r.classList.add('i18n-wait')})();
     <div class="g-intro-r">
       <p class="g-intro-s" data-i18n="intro">버튼과 차트부터 디자인 도구, 문서 편집, 데이터 분석, 업무 화면까지 지금 바로 눌러 볼 수 있는 인터페이스 200개. 화면에 보이면 스스로 움직이고, 직접 누르면 바로 써 볼 수 있어요. 마음에 들면 프롬프트나 코드로 그대로 가져가세요.</p>
       <p class="g-intro-meta"><span id="count-wrap"><b id="count">200</b>개</span><span class="g-dot" aria-hidden="true"></span><span data-i18n="metaTheme">다크 · 라이트</span><span class="g-dot" aria-hidden="true"></span><span data-i18n="metaCode">코드 포함</span></p>
+      <p class="g-intro-links"><button class="g-intro-link" type="button" data-open-skill data-i18n="skillBtnLong">에이전트 스킬로 쓰기 →</button></p>
     </div>
   </div>
 </header>
@@ -127,6 +129,7 @@ r.setAttribute('lang',l);if(l==='en')r.classList.add('i18n-wait')})();
     <span class="g-seg-pill" aria-hidden="true"></span>
   </div>
   <textarea class="g-code" id="pr-text" readonly spellcheck="false" aria-label="적용 프롬프트" role="tabpanel"></textarea>
+  <p class="g-dlg-skill"><span data-i18n="skillLine">에이전트 스킬로 부르기</span><code id="pr-skill"></code><button class="g-cmd-c" type="button" data-copy aria-label="명령 복사" data-i18n-attr="aria-label:copyCmd"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="8" y="8" width="12" height="12" rx="2.5"/><path d="M16 8V6.5A2.5 2.5 0 0 0 13.5 4h-7A2.5 2.5 0 0 0 4 6.5v7A2.5 2.5 0 0 0 6.5 16H8"/></svg></button><button class="g-link-s" type="button" data-open-skill data-i18n="skillHow">설치 방법</button></p>
   <div class="g-dlg-foot">
     <span class="g-dlg-hint" id="pr-hint"></span>
     <div class="g-dlg-acts">
@@ -154,6 +157,21 @@ r.setAttribute('lang',l);if(l==='en')r.classList.add('i18n-wait')})();
     <li><b>코드 파일 받기</b>는 같은 요소를 단독 HTML로 저장합니다. 라이트·다크 토큰이 함께 들어 있어 바로 열어 볼 수 있습니다.</li>
     <li>언어·테마·자동 재생은 위쪽 버튼에서 바꿀 수 있고, 고른 값은 다음 방문에도 유지됩니다.</li>
   </ol>
+  <section class="g-skill" id="guide-skill" aria-labelledby="skill-title" tabindex="-1">
+    <h3 class="g-skill-t" id="skill-title" data-i18n="skillTitle">AI 에이전트에게 맡기기</h3>
+    <p class="g-skill-p" data-i18n="skillLead">lucian-uxui 스킬을 설치하면 Claude Code, Codex 같은 코딩 에이전트가 이 갤러리에서 맞는 요소를 찾아 프로젝트에 옮겨 넣습니다.</p>
+    <ul class="g-cmds">
+      <li><span class="g-cmd-l" data-i18n="skillAny">모든 에이전트</span><code>npx skills add Seokwoooo/lucian-uxui</code><button class="g-cmd-c" type="button" data-copy aria-label="명령 복사" data-i18n-attr="aria-label:copyCmd"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="8" y="8" width="12" height="12" rx="2.5"/><path d="M16 8V6.5A2.5 2.5 0 0 0 13.5 4h-7A2.5 2.5 0 0 0 4 6.5v7A2.5 2.5 0 0 0 6.5 16H8"/></svg></button></li>
+      <li><span class="g-cmd-l" data-i18n="skillPlugin">Claude Code 플러그인</span><code>/plugin marketplace add Seokwoooo/lucian-uxui</code><button class="g-cmd-c" type="button" data-copy aria-label="명령 복사" data-i18n-attr="aria-label:copyCmd"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="8" y="8" width="12" height="12" rx="2.5"/><path d="M16 8V6.5A2.5 2.5 0 0 0 13.5 4h-7A2.5 2.5 0 0 0 4 6.5v7A2.5 2.5 0 0 0 6.5 16H8"/></svg></button></li>
+      <li><span class="g-cmd-l" aria-hidden="true"></span><code>/plugin install lucian-uxui@lucian-uxui</code><button class="g-cmd-c" type="button" data-copy aria-label="명령 복사" data-i18n-attr="aria-label:copyCmd"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="8" y="8" width="12" height="12" rx="2.5"/><path d="M16 8V6.5A2.5 2.5 0 0 0 13.5 4h-7A2.5 2.5 0 0 0 4 6.5v7A2.5 2.5 0 0 0 6.5 16H8"/></svg></button></li>
+    </ul>
+    <dl class="g-skill-use">
+      <dt data-i18n="useAsk">말로 부탁하기</dt><dd data-i18n="useAskEx">“lucian-uxui 스킬로 요금제 토글이랑 FAQ 넣어줘”</dd>
+      <dt data-i18n="usePick">번호로 고르기</dt><dd data-i18n="usePickEx">“lucian-uxui 스킬로 056번 요소 넣어줘”</dd>
+      <dt data-i18n="useCall">바로 부르기</dt><dd data-i18n-html="useCallEx">Claude Code <code>/lucian-uxui</code> (플러그인은 <code>/lucian-uxui:lucian-uxui</code>) · Codex <code>$lucian-uxui</code></dd>
+    </dl>
+    <p class="g-skill-links"><a href="https://github.com/Seokwoooo/lucian-uxui" target="_blank" rel="noopener">GitHub</a><a href="https://lucianlabs.dev/uxui-prompt/introducing/#ch-skill" data-i18n="skillMore">자세히 보기</a></p>
+  </section>
   <p class="g-note" data-i18n-html="guideNote">개발 메모 · 요소마다 <code>.ux</code>와 <code>.uNNN</code> 접두사 안에서만 스타일과 스크립트가 동작합니다. 색은 <code>--ux-*</code> 토큰을 쓰므로 프로젝트 테마 변수에 연결하면 됩니다.</p>
 </dialog>
 
