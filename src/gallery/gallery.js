@@ -37,8 +37,10 @@
     check: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12.5l4.2 4.2L19 7"/></svg>',
     hand: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 11V5.5a1.5 1.5 0 0 1 3 0V10m0-1.5a1.5 1.5 0 0 1 3 0V11m0-1a1.5 1.5 0 0 1 3 0v4.5A5.5 5.5 0 0 1 12.5 20h-1a5 5 0 0 1-4-2l-2.6-3.6a1.4 1.4 0 0 1 2.2-1.7L9 14"/></svg>'
   };
-  function openDialog(d) { if (d.showModal) { if (!d.open) d.showModal(); } else d.setAttribute('open', ''); syncAll(); }
-  function closeDialog(d) { if (d.close) d.close(); else d.removeAttribute('open'); syncAll(); }
+  // 창이 열려 있는 동안 뒤쪽 움직임을 멈추는 표시입니다(:has 선택자는 요소를 붙일 때마다 다시 검사돼 무거워서 클래스로 둡니다)
+  function markDialogs() { body.classList.toggle('has-dlg', !!$('dialog[open]')); }
+  function openDialog(d) { if (d.showModal) { if (!d.open) d.showModal(); } else d.setAttribute('open', ''); markDialogs(); syncAll(); }
+  function closeDialog(d) { if (d.close) d.close(); else d.removeAttribute('open'); markDialogs(); syncAll(); }
 
   /* ---------- 언어: 저장한 값 → 한국 시간대나 한국어 브라우저면 한국어 → 그 밖에는 영어 ---------- */
   var CAT_EN = {
@@ -1193,7 +1195,7 @@
   $$('[data-close]').forEach(function (b) { b.addEventListener('click', function () { closeDialog(b.closest('dialog')); }); });
   $$('dialog').forEach(function (d) {
     d.addEventListener('click', function (e) { if (e.target === d) closeDialog(d); });
-    d.addEventListener('close', syncAll);
+    d.addEventListener('close', function () { markDialogs(); syncAll(); });
   });
   $('#to-guide').addEventListener('click', function () { openDialog($('#dlg-guide')); });
   // 에이전트 스킬 안내: 적용 방법 대화상자를 열고 스킬 블록으로 바로 갑니다
@@ -1243,28 +1245,44 @@
     Object.keys(mounted).forEach(function (k) { unmountSlide(+k); });
     reelList = visible.length && !all ? visible.slice() : ITEMS.map(function (_, i) { return i; });
     reel.innerHTML = '';
+    // 200장을 한 번에 그리면 여는 순간이 끊기므로, 높이만 있는 빈 화면을 만들고 내용은 fillSlide가 채웁니다
+    var frag = document.createDocumentFragment();
     slides = reelList.map(function (idx, p) {
-      var it = ITEMS[idx];
       var s = document.createElement('section');
       s.className = 'g-slide';
       s.dataset.p = String(p);
-      s.style.setProperty('--h', it.hue);
-      s.style.setProperty('--h2', it.hue2);
-      s.innerHTML =
-        '<div class="g-slide-bg" aria-hidden="true"></div>' +
-        '<div class="g-slide-stage"><div class="g-fit' + (it.fluid ? ' is-fluid' : '') + '"></div></div>' +
-        '<div class="g-slide-meta"></div>' +
-        '<div class="g-rail"></div>';
-      slideMeta(s, it);
-      bindTakeover(s);
-      reel.appendChild(s);
+      s.setAttribute('aria-label', ITEMS[idx].id + ' ' + loc(ITEMS[idx]).title);
+      frag.appendChild(s);
       return s;
     });
+    reel.appendChild(frag);
     mounted = {};
     cur = -1;
     reelDirty = false;
   }
-  function stageOf(p) { return slides[p].querySelector('.g-slide-stage'); }
+  function fillSlide(p) {
+    var s = slides[p];
+    if (!s || s._filled) return;
+    var it = ITEMS[reelList[p]];
+    s.style.setProperty('--h', it.hue);
+    s.style.setProperty('--h2', it.hue2);
+    s.innerHTML =
+      '<div class="g-slide-bg" aria-hidden="true"></div>' +
+      '<div class="g-slide-stage"><div class="g-fit' + (it.fluid ? ' is-fluid' : '') + '"></div></div>' +
+      '<div class="g-slide-meta"></div>' +
+      '<div class="g-rail"></div>';
+    slideMeta(s, it);
+    if (!s._bound) { bindTakeover(s); s._bound = true; }
+    s._filled = true;
+  }
+  // 멀어진 화면은 다시 비워 둡니다(요소가 올라가 있으면 그대로 둡니다)
+  function emptySlide(p) {
+    var s = slides[p];
+    if (!s || !s._filled || mounted[p]) return;
+    s.innerHTML = '';
+    s._filled = false;
+  }
+  function stageOf(p) { fillSlide(p); return slides[p].querySelector('.g-slide-stage'); }
   // 좁은 화면에서는 설명 블록의 실제 높이만큼 무대를 띄워 요소와 설명이 겹치지 않게 합니다
   function placeStage(p) {
     var s = slides[p], st = stageOf(p), m = $('.g-slide-meta', s);
@@ -1290,7 +1308,9 @@
     if (cur >= 0 && slides[cur]) slides[cur].classList.remove('is-on');
     cur = p;
     slides[p].classList.add('is-on');
+    for (var k = Math.max(0, p - 2); k <= Math.min(slides.length - 1, p + 2); k++) fillSlide(k);
     [p - 1, p, p + 1].forEach(function (k) { if (k >= 0 && k < slides.length) mountSlide(k); });
+    slides.forEach(function (s, k) { if (s._filled && Math.abs(k - p) > 4) emptySlide(k); });
     Object.keys(mounted).forEach(function (k) { k = +k; if (Math.abs(k - p) > 1) unmountSlide(k); });
     // 지금 화면의 요소만 시연하고, 이웃 화면은 멈춰 둡니다
     Object.keys(mounted).forEach(function (k) {
@@ -1321,6 +1341,7 @@
     reel.scrollTo({ top: p * reel.clientHeight, behavior: smooth && !reduce.matches ? 'smooth' : 'auto' });
     if (!smooth) setCurrent(p);
   }
+  var gridOffT = 0;
   function openReel(idx, fromTile, noPush) {
     if (reelDirty || !slides.length) buildReel();
     var p = reelList.indexOf(idx);
@@ -1328,9 +1349,13 @@
     opener = fromTile || null;
     body.dataset.view = 'reel';
     reel.setAttribute('aria-hidden', 'false');
-    // 그리드의 요소는 잠시 해제해서 릴스만 움직이게 합니다
-    $$('.g-fit', grid).forEach(function (f) { if (f.firstChild) unmount(f); });
+    // 그리드의 요소는 잠시 해제해서 릴스만 움직이게 합니다. 여는 순간 한꺼번에 내리면 첫 화면이 끊기므로 릴스가 펼쳐진 뒤에 내립니다
     unwatchAll();
+    clearTimeout(gridOffT);
+    gridOffT = setTimeout(function () {
+      if (body.dataset.view !== 'reel') return;
+      $$('.g-fit', grid).forEach(function (f) { if (f.firstChild) unmount(f); });
+    }, 700);
     if (!noPush) history.pushState({ reel: true }, '', '#' + ITEMS[idx].id);
     requestAnimationFrame(function () {
       goTo(p, false);
@@ -1452,7 +1477,10 @@
     if (slides.length) {
       if (body.dataset.view === 'reel' && cur >= 0) {
         var keep = cur;
-        slides.forEach(function (s, p) { slideMeta(s, ITEMS[reelList[p]]); });
+        slides.forEach(function (s, p) {
+          var it = ITEMS[reelList[p]];
+          if (s._filled) slideMeta(s, it); else s.setAttribute('aria-label', it.id + ' ' + loc(it).title);
+        });
         Object.keys(mounted).forEach(function (k) { unmountSlide(+k); });
         cur = -1;
         setCurrent(keep);

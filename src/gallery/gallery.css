@@ -68,10 +68,29 @@ svg{display:block}
 .js .is-ready .g-w{opacity:1;transform:none;filter:none}
 .js .is-ready .g-w:nth-child(2){transition-delay:.08s}
 .js .is-ready .g-w:nth-child(3){transition-delay:.16s}
-.g-intro-r{max-width:400px;padding-bottom:6px}
+.g-intro-r{max-width:440px;padding-bottom:6px}
 .g-intro-s{margin:0;font-size:15.5px;line-height:1.62;color:var(--ux-ink-2);word-break:keep-all;overflow-wrap:break-word}
 .g-intro-meta{margin:14px 0 0;display:flex;align-items:center;gap:10px;font-size:13px;font-weight:600;color:var(--ux-ink-3);font-variant-numeric:tabular-nums}
 .g-intro-meta b{color:var(--ux-ink)}
+/* 소개 문단 아래 스킬 설치 명령 한 줄과 저장소 바로가기 */
+.g-install{display:flex;flex-wrap:wrap;align-items:center;gap:8px;margin:16px 0 0}
+.g-install-cmd{display:flex;align-items:center;gap:2px;min-width:0;max-width:100%;margin:0;padding:4px 4px 4px 15px;border-radius:999px;background:var(--ux-surface);box-shadow:inset 0 0 0 1px var(--ux-line)}
+.g-install-cmd code{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font:12.5px/1.4 ui-monospace,SFMono-Regular,Menlo,monospace;color:var(--ux-ink)}
+.g-install-cmd .g-cmd-c{width:32px;height:32px;background:transparent;box-shadow:none}
+.g-install-cmd .g-cmd-c:hover{box-shadow:inset 0 0 0 1px var(--ux-line-2)}
+.g-install-cmd .g-cmd-c.is-done{background:var(--ux-mint)}
+.g-gh{display:inline-flex;align-items:center;gap:7px;height:40px;padding:0 16px 0 13px;border-radius:999px;background:var(--ux-ink);color:var(--ux-page);font-size:13.5px;font-weight:650;text-decoration:none;transition:transform .45s var(--ux-spring)}
+.g-gh svg{width:16px;height:16px;fill:currentColor}
+.g-gh:hover{transform:translateY(-1px)}
+.g-gh:active{transform:scale(.96)}
+@media (max-width:760px){
+  .g-install{gap:6px}
+  .g-install-cmd{flex:1 1 auto;padding-left:12px}
+  .g-install-cmd code{font-size:min(12px,3vw)}
+  .g-install-cmd .g-cmd-c{width:30px;height:30px}
+  .g-gh{flex:none;width:40px;padding:0;justify-content:center}
+  .g-gh span{position:absolute;width:1px;height:1px;overflow:hidden;clip-path:inset(50%);white-space:nowrap}
+}
 .g-dot{width:3px;height:3px;border-radius:50%;background:currentColor;opacity:.6}
 
 /* ---------- 도구줄: 스크롤하면 위에 붙습니다 ---------- */
@@ -193,7 +212,10 @@ svg{display:block}
   opacity:0;transform:translateY(22px) scale(.97);transition:opacity .4s var(--ux-ease),transform .65s var(--ux-spring),overlay .4s allow-discrete,display .4s allow-discrete}
 .g-dlg[open]{opacity:1;transform:none}
 @starting-style{.g-dlg[open]{opacity:0;transform:translateY(22px) scale(.97)}}
-.g-dlg::backdrop{background:color-mix(in oklab,var(--ux-page) 55%,transparent);-webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px)}
+/* 전체 화면 흐림(backdrop-filter)은 뒤에서 요소가 움직일 때마다 화면 전체를 다시 흐려 열린 창이 끊깁니다. 흐림 대신 진한 막을 씁니다 */
+.g-dlg::backdrop{background:color-mix(in oklab,var(--ux-page) 84%,transparent)}
+/* 창이 열려 있는 동안 뒤쪽 요소와 배경의 움직임을 멈춰 둡니다 */
+body.has-dlg .g-slide-bg,body.has-dlg .g-fit *{animation-play-state:paused}
 .g-dlg-head{display:flex;align-items:flex-start;justify-content:space-between;gap:16px;padding:26px 28px 0}
 .g-dlg-kicker{margin:0;font-size:12px;font-weight:650;letter-spacing:.08em;color:var(--ux-ink-3);font-variant-numeric:tabular-nums}
 .g-dlg-title{margin:6px 0 0;font-size:26px;line-height:1.15;letter-spacing:-.035em;font-weight:760}
@@ -233,6 +255,7 @@ body[data-view="reel"] .g-reel{opacity:1;visibility:visible;transform:none;trans
     radial-gradient(28% 34% at 62% 22%,color-mix(in oklab,#22C3A6 calc(var(--g-glow) * .35),transparent),transparent 72%);
   animation:g-drift 16s ease-in-out infinite alternate}
 @keyframes g-drift{from{transform:translate3d(-2%,-1%,0) scale(1)}to{transform:translate3d(2%,1.5%,0) scale(1.06)}}
+.g-slide:not(.is-on) .g-slide-bg{animation-play-state:paused}
 .g-slide-stage{position:absolute;left:0;right:0;top:80px;bottom:210px}
 .g-slide-stage .g-fit{transition:opacity .6s var(--ux-ease),filter .7s var(--ux-ease)}
 .js .g-slide:not(.is-on) .g-slide-stage .g-fit{opacity:0;filter:blur(8px)}
