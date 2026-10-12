@@ -20,6 +20,16 @@ If you'd rather port it yourself, **Copy code** gives you the raw HTML, CSS and 
 
 To link to a specific element, add its number: `https://lucianlabs.dev/uxui-prompt/#001`.
 
+## Use it from an AI coding agent
+
+Install the [lucian-uxui skill](https://github.com/Seokwoooo/lucian-uxui), and your agent can search the library and port elements by itself:
+
+```sh
+npx skills add Seokwoooo/lucian-uxui
+```
+
+Then ask something like "Build a landing page for my coffee subscription. Use the lucian-uxui skill and prefer its elements." The skill reads the static data in [`api/v1/`](api/v1), which is generated from `src/elements` and also served at `https://lucianlabs.dev/uxui-prompt/api/v1/`.
+
 ## Run locally
 
 All you need is Node.js. There are no packages to install.
@@ -75,6 +85,16 @@ Each element is a single file, `src/elements/NNN-slug.html`:
 AI는 프로젝트의 프레임워크와 스타일, 테마 방식을 먼저 확인한 뒤 요소를 컴포넌트로 옮깁니다. `--ux-*` 색 토큰은 프로젝트의 테마 변수에 연결하고, 바꾼 파일과 확인하지 못한 항목을 알려 줍니다.
 
 직접 옮기고 싶다면 **코드 복사**로 HTML·CSS·JS 원본을 받거나, **코드 파일 받기**로 테마 전환 버튼이 있는 단독 HTML 파일을 저장하세요. 특정 요소는 `https://lucianlabs.dev/uxui-prompt/#001`처럼 번호로 바로 연결할 수 있습니다.
+
+### AI 에이전트에서 쓰기
+
+[lucian-uxui 스킬](https://github.com/Seokwoooo/lucian-uxui)을 설치하면 에이전트가 직접 요소를 찾아 프로젝트에 옮겨 넣습니다.
+
+```sh
+npx skills add Seokwoooo/lucian-uxui
+```
+
+설치한 뒤 "카페 랜딩 페이지 만들어줘. lucian-uxui 스킬로 여기 요소를 우선 써줘."처럼 요청하면 됩니다. 스킬이 읽는 데이터는 [`api/v1/`](api/v1)에 있습니다. `src/elements`에서 생성한 파일이고, `https://lucianlabs.dev/uxui-prompt/api/v1/`에서도 받을 수 있습니다.
 
 ### 로컬에서 실행
 
