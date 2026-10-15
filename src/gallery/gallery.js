@@ -48,18 +48,22 @@
     '카드·콘텐츠': 'Cards & Content', '로그인·가입': 'Sign-in & Sign-up', '알림·피드백': 'Alerts & Feedback',
     '로딩·진행': 'Loading & Progress', '빈·오류 상태': 'Empty & Error States', '위젯·차트': 'Widgets & Charts',
     '공간·일정·디자인 도구': 'Layout, Schedule & Design', '문서·데이터 편집': 'Document & Data Editing',
-    '분석·데이터': 'Analytics & Data', '작업·시스템': 'Workflow & Systems'
+    '분석·데이터': 'Analytics & Data', '작업·시스템': 'Workflow & Systems',
+    '텍스트 모션': 'Text Motion', '히어로·배경': 'Hero & Backgrounds', '내비게이션': 'Navigation', '스크롤 모션': 'Scroll Motion',
+    '섹션·콘텐츠': 'Sections & Content', '소셜 증명': 'Social Proof', '커머스·가격': 'Commerce & Pricing', '폼·입력': 'Forms & Input',
+    '앱 화면': 'App Screens', '빌더 도구': 'Site Builder Tools', '커서·호버': 'Cursor & Hover', '프로모션·보상': 'Promos & Rewards', '데이터 모션': 'Data Motion'
   };
   var T = {
     ko: {
       docTitle: 'Lucian UX/UI Prompt',
-      docDesc: '바로 눌러 볼 수 있는 UX/UI 요소 200개. 다크·라이트 테마와 실제 코드, 적용 프롬프트를 함께 제공합니다.',
+      docDesc: '바로 눌러 볼 수 있는 UX/UI 요소 400개. 인터페이스 200개와 웹사이트를 만들 때 바로 쓰는 애니메이션 200개를 다크·라이트 테마, 실제 코드, 적용 프롬프트와 함께 제공합니다.',
       skip: '요소 목록으로 건너뛰기',
       brand: 'Lucian UX/UI Prompt, 맨 위로',
       guideBtn: '적용 방법',
       langGroup: '언어',
       h1: 'Lucian UX/UI Prompt', w1: 'Lucian', w2: 'UX/UI', w3: 'Prompt',
-      intro: '버튼과 차트부터 디자인 도구, 문서 편집, 데이터 분석, 업무 화면까지 지금 바로 눌러 볼 수 있는 인터페이스 200개. 화면에 보이면 스스로 움직이고, 직접 누르면 바로 써 볼 수 있어요. 마음에 들면 프롬프트나 코드로 그대로 가져가세요.',
+      intro: '버튼과 차트부터 업무 화면까지 인터페이스 200개, 그리고 새로 더한 히어로·가격표·장바구니·폼·대시보드처럼 웹사이트를 만들 때 바로 쓰는 애니메이션 200개. 화면에 보이면 스스로 움직이고, 직접 누르면 바로 써 볼 수 있어요. 마음에 들면 프롬프트나 코드로 그대로 가져가세요.',
+      sets: '컬렉션', setAll: '전체', setNew: '애니메이션', setOld: '인터페이스', newBadge: '새로 추가',
       count: function (n) { return '<b id="count">' + n + '</b>개'; },
       metaTheme: '다크 · 라이트', metaCode: '코드 포함',
       cats: '분류',
@@ -99,13 +103,14 @@
     },
     en: {
       docTitle: 'Lucian UX/UI Prompt',
-      docDesc: '200 UX/UI elements you can try right away — with dark and light themes, working code and a ready-to-use prompt.',
+      docDesc: '400 UX/UI elements you can try right away: 200 interfaces plus 200 new animations for building websites, with dark and light themes, working code and a ready-to-use prompt.',
       skip: 'Skip to the elements',
       brand: 'Lucian UX/UI Prompt, back to top',
       guideBtn: 'How to use',
       langGroup: 'Language',
       h1: 'Lucian UX/UI Prompt', w1: 'Lucian', w2: 'UX/UI', w3: 'Prompt',
-      intro: 'From buttons and charts to design tools, document editors, analytics and workflow screens — 200 interfaces you can try right now. Each one plays itself when it scrolls into view, and you can take over with a tap. Take the ones you like as a prompt or as code.',
+      intro: '200 interfaces, from buttons and charts to workflow screens, plus 200 new animated pieces you reach for when building a website: heroes, pricing, carts, forms and dashboards. Each one plays itself when it scrolls into view, and you can take over with a tap. Take the ones you like as a prompt or as code.',
+      sets: 'Collection', setAll: 'All', setNew: 'Animation', setOld: 'Interface', newBadge: 'New',
       count: function (n) { return '<b id="count">' + n + '</b> elements'; },
       metaTheme: 'Dark · Light', metaCode: 'Code included',
       cats: 'Categories',
@@ -362,6 +367,8 @@
     hoverTo(P, null, 0, 0);
     ghost(P, 'off');
     unmute(P);
+    // 처음 상태로 되돌리려고 흐려지던 중에 멈추면 다시 그리는 예약이 취소되므로, 투명한 채로 남지 않게 바로 되살립니다
+    if (P.fit.style.opacity === '0') P.fit.style.opacity = '';
   }
   // 처음 상태로 되돌립니다. 안 보일 때는 바로, 보일 때는 잠깐 흐려졌다가 새로 그립니다
   // 화면에 보이지 않을 때는 흐려지는 효과 없이 바로 처음 상태로 되돌려 둡니다. 다시 보일 때 깜빡이지 않습니다
@@ -427,7 +434,19 @@
       if (type === 'pointermove' && !extra) init.button = -1;
       ev = new PointerEvent(type, init);
     } else ev = new MouseEvent(type, init);
-    try { el.dispatchEvent(ev); } catch (e) { /* 요소 처리기 오류는 요소 쪽에서 보고됩니다 */ }
+    try { if (type === 'click') holdScroll(function () { el.dispatchEvent(ev); }); else el.dispatchEvent(ev); } catch (e) { /* 요소 처리기 오류는 요소 쪽에서 보고됩니다 */ }
+  }
+  // 시연 클릭이 라벨에 닿으면 브라우저가 연결된 입력칸으로 초점을 옮깁니다(위의 focus() 막기를 거치지 않는 내장 동작).
+  // 이때 반쯤 가려진 타일을 보이려고 페이지(또는 릴)가 위아래로 튀므로, 클릭을 보낸 자리에서 화면이 그려지기 전에 스크롤을 되돌립니다.
+  // 사용자가 타일 밖(검색창 등)에 두었던 초점을 빼앗았다면 그것도 돌려줍니다
+  function holdScroll(fn) {
+    var wx = window.scrollX, wy = window.scrollY, rl = body.dataset.view === 'reel' ? reel : null, rt = rl ? rl.scrollTop : 0;
+    var ae = document.activeElement;
+    try { fn(); } finally {
+      if (window.scrollX !== wx || window.scrollY !== wy) window.scrollTo(wx, wy);
+      if (rl && rl.scrollTop !== rt) rl.scrollTop = rt;
+      if (ae && ae !== body && ae !== document.activeElement && ae.isConnected && !ae.closest('.g-fit')) nativeFocus.call(ae, { preventScroll: true });
+    }
   }
   // 실제 포인터처럼 들어가고 나오는 순서대로 enter/leave, over/out을 보냅니다
   // 맥 커서처럼 요소의 cursor 값에 따라 화살표·손가락·I자로 바꿉니다
@@ -719,76 +738,58 @@
   $$('[data-auto]').forEach(function (b) { b.addEventListener('click', function () { setAuto(!autoOn); }); });
 
   /* ---------- 분류·검색 상태 ---------- */
+  // 컬렉션: 'all'(새 애니메이션 200개를 먼저, 이어서 인터페이스 200개), '2'(애니메이션), '1'(인터페이스)
+  var SET_KEY = 'ux-gallery-set';
+  var activeSet = (function () { var s = store.get(SET_KEY); return s === '1' || s === '2' ? s : 'all'; })();
+  var inSet = function (it) { return activeSet === 'all' || String(it.set || 1) === activeSet; };
+  // 전체 순서: 새로 더한 컬렉션을 먼저 보여 주고, 같은 컬렉션 안에서는 정해 둔 순서(rank), 없으면 번호 순입니다
+  var rankOf = function (i) { return ITEMS[i].rank == null ? 1e9 : ITEMS[i].rank; };
+  var ORDER = ITEMS.map(function (_, i) { return i; }).sort(function (a, b) { return ((ITEMS[b].set || 1) - (ITEMS[a].set || 1)) || (rankOf(a) - rankOf(b)) || (a - b); });
   var CATS = [];
-  ITEMS.forEach(function (it) { if (CATS.indexOf(it.category) < 0) CATS.push(it.category); });
+  // 분류 칩은 순위나 번호와 상관없이 컬렉션 순서, 그 안에서는 빌드에 적어 둔 분류 차례(ci)로 늘어놓습니다
+  ITEMS.map(function (_, i) { return i; }).sort(function (a, b) { return ((ITEMS[b].set || 1) - (ITEMS[a].set || 1)) || ((ITEMS[a].ci == null ? 99 : ITEMS[a].ci) - (ITEMS[b].ci == null ? 99 : ITEMS[b].ci)) || (a - b); }).forEach(function (i) { var c = ITEMS[i].category; if (CATS.indexOf(c) < 0) CATS.push(c); });
   var activeCat = '전체';
   var query = '';
   // 한국어·영어 어느 쪽으로 찾아도 걸리도록 두 언어를 함께 넣어 둡니다
   var HAY = ITEMS.map(function (it) {
     var en = it.en || {};
-    return [it.id, it.title, it.summary, it.category, CAT_EN[it.category] || '', it.tags.join(' '), en.title || '', en.summary || ''].join(' ').toLowerCase();
+    return [it.id, it.title, it.summary, it.category, CAT_EN[it.category] || '', it.tags.join(' '), en.title || '', en.summary || '', it.set === 2 ? 'new 애니메이션 animation' : ''].join(' ').toLowerCase();
   });
   var visible = [];
   function computeVisible() {
     var words = query.split(/\s+/).filter(Boolean);
     visible = [];
-    ITEMS.forEach(function (it, i) {
+    ORDER.forEach(function (i) {
+      var it = ITEMS[i];
       var okC = activeCat === '전체' || it.category === activeCat;
-      if (okC && words.every(function (w) { return HAY[i].indexOf(w) >= 0; })) visible.push(i);
+      if (okC && inSet(it) && words.every(function (w) { return HAY[i].indexOf(w) >= 0; })) visible.push(i);
     });
   }
-  var isLooping = function () { return activeCat === '전체' && !query; };
 
   /* ---------- 타일 그리드: 3열(모바일 2열), 다섯 칸마다 긴 타일 하나 ---------- */
   var grid = $('#grid');
   var more = $('#more');
   var cols = mobileQ.matches ? 2 : 3;
-  var orders = [];
-  // 첫 바퀴는 원래 순서, 다음 바퀴부터는 고정된 난수로 섞어 같은 배열이 반복되지 않게 합니다
-  function orderOf(loop) {
-    if (!orders[loop]) {
-      var arr = ITEMS.map(function (_, i) { return i; });
-      if (loop > 0) {
-        var seed = 7 + loop * 9973;
-        for (var k = arr.length - 1; k > 0; k--) {
-          seed = (Math.imul(seed, 1103515245) + 12345) & 0x7fffffff;
-          var j = seed % (k + 1), tmp = arr[k]; arr[k] = arr[j]; arr[j] = tmp;
-        }
-      }
-      orders[loop] = arr;
-    }
-    return orders[loop];
-  }
+  // 요소마다 한 번씩만 놓습니다. 끝까지 내려가도 앞에서 본 요소를 다시 이어 붙이지 않습니다
   var stream, buffer, groupN, placed, done;
-  function resetStream() { stream = { loop: 0, pos: 0 }; buffer = []; groupN = 0; placed = 0; done = false; }
-  function nextIdx() {
-    if (!isLooping()) return stream.pos < visible.length ? visible[stream.pos++] : -1;
-    var seq = orderOf(stream.loop);
-    if (stream.pos >= seq.length) { stream.loop += 1; stream.pos = 0; seq = orderOf(stream.loop); }
-    return seq[stream.pos++];
-  }
+  function resetStream() { stream = { pos: 0 }; buffer = []; groupN = 0; placed = 0; done = false; }
+  function nextIdx() { return stream.pos < visible.length ? visible[stream.pos++] : -1; }
   function fillBuffer(n) {
     while (buffer.length < n) {
       var i = nextIdx();
       if (i < 0) break;
-      buffer.push({ i: i, first: stream.loop === 0 });
+      buffer.push({ i: i });
     }
   }
-  // 한 묶음은 두 줄입니다. 앞쪽에서 긴 요소를 찾으면 왼쪽·오른쪽 번갈아 두 줄 높이로 놓습니다
+  // 목록 순서 그대로 한 묶음(두 줄 분량)씩 놓습니다. 긴 요소는 놓이는 자리에서 두 줄을 차지하고,
+  // 그리드가 빈칸 없이 순서대로 채우므로 화면의 읽는 순서가 번호 순서와 같습니다
   function nextGroup() {
-    var squares = (cols - 1) * 2;
-    fillBuffer(squares + 1);
+    fillBuffer(cols * 2);
     if (!buffer.length) return null;
-    var out = [];
-    var ti = -1;
-    for (var k = 0; k < Math.min(buffer.length, squares + 1); k++) {
-      if (ITEMS[buffer[k].i].shape === 'tall') { ti = k; break; }
-    }
-    if (ti >= 0 && buffer.length > 1) {
-      out.push({ e: buffer.splice(ti, 1)[0], tall: true, side: groupN % 2 ? 'last' : 'first' });
-      for (k = 0; k < squares && buffer.length; k++) out.push({ e: buffer.shift() });
-    } else {
-      for (k = 0; k < cols * 2 && buffer.length; k++) out.push({ e: buffer.shift() });
+    var out = [], cells = 0;
+    while (buffer.length && cells < cols * 2) {
+      var e = buffer.shift(), tall = ITEMS[e.i].shape === 'tall';
+      out.push({ e: e, tall: tall }); cells += tall ? 2 : 1;
     }
     groupN += 1;
     return out;
@@ -801,16 +802,16 @@
   function makeTile(slot, delay) {
     var it = ITEMS[slot.e.i];
     var el = document.createElement('article');
-    el.className = 'g-tile is-new' + (slot.tall ? ' is-tall at-' + slot.side : '');
+    el.className = 'g-tile is-new' + (slot.tall ? ' is-tall' : '');
     el.dataset.idx = String(slot.e.i);
     el.style.setProperty('--h', it.hue);
     el.style.setProperty('--h2', it.hue2);
     el.style.setProperty('--d', delay + 'ms');
-    if (slot.e.first) el.id = 'tile-' + it.id;
+    el.id = 'tile-' + it.id;
     el.innerHTML =
       '<button class="g-open" type="button" tabindex="-1" aria-hidden="true" data-open="' + slot.e.i + '"></button>' +
       '<div class="g-stage"><div class="g-fit' + (it.fluid ? ' is-fluid' : '') + '"></div></div>' +
-      '<p class="g-cap"><b>' + it.id + '</b><span></span></p>' +
+      '<p class="g-cap"><b>' + it.id + '</b>' + (it.set === 2 ? '<em class="g-new" aria-hidden="true">NEW</em>' : '') + '<span></span></p>' +
       '<button class="g-exp" type="button" data-open="' + slot.e.i + '">' + ICON.open + '</button>';
     tileText(el, it);
     bindTakeover(el);
@@ -920,8 +921,10 @@
   var pill = $('.g-cats-pill', cats);
   function renderCats() {
     $$('.g-cat', cats).forEach(function (b) { b.remove(); });
-    cats.insertAdjacentHTML('beforeend', ['전체'].concat(CATS).map(function (c) {
-      var n = c === '전체' ? ITEMS.length : ITEMS.filter(function (it) { return it.category === c; }).length;
+    var pool = ITEMS.filter(inSet);
+    var list = CATS.filter(function (c) { return pool.some(function (it) { return it.category === c; }); });
+    cats.insertAdjacentHTML('beforeend', ['전체'].concat(list).map(function (c) {
+      var n = c === '전체' ? pool.length : pool.filter(function (it) { return it.category === c; }).length;
       return '<button class="g-cat" type="button" data-cat="' + esc(c) + '" aria-pressed="' + (c === activeCat) + '">' + esc(catLabel(c)) + '<i>' + n + '</i></button>';
     }).join(''));
   }
@@ -943,6 +946,41 @@
     rebuildGrid();
     scrollToGridTop();
   });
+  /* ---------- 컬렉션 스위치: 전체 · 애니메이션(새로 추가) · 인터페이스 ---------- */
+  var sets = $('#sets');
+  var setPill = $('.g-sets-pill', sets);
+  function moveSetPill(animate) {
+    var b = $('.g-set[aria-pressed="true"]', sets);
+    if (!b) return;
+    if (!animate) sets.classList.add('no-anim');
+    setPill.style.setProperty('--x', b.offsetLeft + 'px');
+    setPill.style.setProperty('--w', b.offsetWidth + 'px');
+    if (!animate) requestAnimationFrame(function () { sets.classList.remove('no-anim'); });
+  }
+  function syncSets() {
+    $$('.g-set', sets).forEach(function (b) {
+      var v = b.dataset.set;
+      b.setAttribute('aria-pressed', String(v === activeSet));
+      $('i', b).textContent = v === 'all' ? ITEMS.length : ITEMS.filter(function (it) { return String(it.set || 1) === v; }).length;
+    });
+  }
+  function setSet(v, animate) {
+    if (v === activeSet) return;
+    activeSet = v;
+    store.set(SET_KEY, v);
+    activeCat = '전체';
+    syncSets();
+    moveSetPill(animate !== false);
+    renderCats();
+    movePill(false);
+    rebuildGrid();
+    scrollToGridTop();
+  }
+  sets.addEventListener('click', function (e) {
+    var b = e.target.closest('[data-set]');
+    if (b) setSet(b.dataset.set);
+  });
+  window.addEventListener('resize', function () { moveSetPill(false); });
   function scrollToGridTop() {
     var bar = $('#bar');
     var top = bar.getBoundingClientRect().top + scrollY;
@@ -986,6 +1024,7 @@
   q.addEventListener('blur', function () { setTimeout(function () { if (!q.value && document.activeElement !== q) closeSearch(); }, 120); });
   $('#empty-reset').addEventListener('click', function () {
     q.value = ''; query = ''; search.classList.remove('has-q'); closeSearch();
+    if (activeSet !== 'all') { activeSet = 'all'; store.set(SET_KEY, 'all'); syncSets(); moveSetPill(true); renderCats(); }
     activeCat = '전체';
     $$('.g-cat', cats).forEach(function (c) { c.setAttribute('aria-pressed', String(c.dataset.cat === '전체')); });
     movePill(true);
@@ -1232,7 +1271,7 @@
     var c = loc(it);
     s.setAttribute('aria-label', it.id + ' ' + c.title);
     $('.g-slide-meta', s).innerHTML =
-      '<p class="g-slide-kick"><b>' + it.id + '</b> · ' + esc(c.category) + '</p>' +
+      '<p class="g-slide-kick"><b>' + it.id + '</b> · ' + esc(c.category) + (it.set === 2 ? ' <em class="g-new">NEW</em>' : '') + '</p>' +
       '<h2 class="g-slide-t">' + esc(c.title) + '</h2>' +
       '<p class="g-slide-s">' + esc(c.summary) + '</p>' +
       (c.hint ? '<p class="g-slide-hint">' + ICON.hand + '<span>' + esc(c.hint) + '</span></p>' : '');
@@ -1243,7 +1282,7 @@
   }
   function buildReel(all) {
     Object.keys(mounted).forEach(function (k) { unmountSlide(+k); });
-    reelList = visible.length && !all ? visible.slice() : ITEMS.map(function (_, i) { return i; });
+    reelList = visible.length && !all ? visible.slice() : ORDER.slice();
     reel.innerHTML = '';
     // 200장을 한 번에 그리면 여는 순간이 끊기므로, 높이만 있는 빈 화면을 만들고 내용은 fillSlide가 채웁니다
     var frag = document.createDocumentFragment();
@@ -1466,6 +1505,7 @@
     applyStatic();
     renderCats();
     movePill(false);
+    moveSetPill(false);
     // 타일은 자리를 그대로 두고 문구와 요소만 바꿉니다
     $$('.g-tile', grid).forEach(function (el) {
       var it = ITEMS[+el.dataset.idx];
@@ -1493,11 +1533,13 @@
   /* ---------- 시작 ---------- */
   computeVisible();
   applyStatic();
+  syncSets();
   renderCats();
   rebuildGrid();
   movePill(false);
+  moveSetPill(false);
   root.classList.remove('i18n-wait');
-  requestAnimationFrame(function () { $('.g-head').classList.add('is-ready'); applyStatic(); });
+  requestAnimationFrame(function () { $('.g-head').classList.add('is-ready'); applyStatic(); moveSetPill(false); });
   var m0 = /^#(\d{3})$/.exec(location.hash);
   if (m0) {
     var i0 = ITEMS.findIndex(function (it) { return it.id === m0[1]; });

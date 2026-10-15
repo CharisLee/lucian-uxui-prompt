@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <title>Lucian UX/UI Prompt</title>
-<meta name="description" content="바로 눌러 볼 수 있는 UX/UI 요소 200개. 다크·라이트 테마와 실제 코드, 적용 프롬프트를 함께 제공합니다.">
+<meta name="description" content="바로 눌러 볼 수 있는 UX/UI 요소 400개. 인터페이스 200개와 새로 더한 애니메이션 200개를 다크·라이트 테마, 실제 코드, 적용 프롬프트와 함께 제공합니다.">
 <link rel="icon" href="data:,">
 <script>
 /* 첫 화면을 그리기 전에 테마와 언어를 정합니다.
@@ -52,8 +52,8 @@ r.setAttribute('lang',l);if(l==='en')r.classList.add('i18n-wait')})();
       <b class="g-w" aria-hidden="true" data-i18n="w3">Prompt</b>
     </h1>
     <div class="g-intro-r">
-      <p class="g-intro-s" data-i18n="intro">버튼과 차트부터 디자인 도구, 문서 편집, 데이터 분석, 업무 화면까지 지금 바로 눌러 볼 수 있는 인터페이스 200개. 화면에 보이면 스스로 움직이고, 직접 누르면 바로 써 볼 수 있어요. 마음에 들면 프롬프트나 코드로 그대로 가져가세요.</p>
-      <p class="g-intro-meta"><span id="count-wrap"><b id="count">200</b>개</span><span class="g-dot" aria-hidden="true"></span><span data-i18n="metaTheme">다크 · 라이트</span><span class="g-dot" aria-hidden="true"></span><span data-i18n="metaCode">코드 포함</span></p>
+      <p class="g-intro-s" data-i18n="intro">버튼과 차트부터 업무 화면까지 인터페이스 200개, 그리고 새로 더한 히어로·가격표·장바구니·폼·대시보드처럼 웹사이트를 만들 때 바로 쓰는 애니메이션 200개. 화면에 보이면 스스로 움직이고, 직접 누르면 바로 써 볼 수 있어요. 마음에 들면 프롬프트나 코드로 그대로 가져가세요.</p>
+      <p class="g-intro-meta"><span id="count-wrap"><b id="count">400</b>개</span><span class="g-dot" aria-hidden="true"></span><span data-i18n="metaTheme">다크 · 라이트</span><span class="g-dot" aria-hidden="true"></span><span data-i18n="metaCode">코드 포함</span></p>
       <div class="g-install"><p class="g-install-cmd"><code>npx skills add Seokwoooo/lucian-uxui</code><button class="g-cmd-c" type="button" data-copy aria-label="명령 복사" data-i18n-attr="aria-label:copyCmd"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="8" y="8" width="12" height="12" rx="2.5"/><path d="M16 8V6.5A2.5 2.5 0 0 0 13.5 4h-7A2.5 2.5 0 0 0 4 6.5v7A2.5 2.5 0 0 0 6.5 16H8"/></svg></button></p><a class="g-gh" href="https://github.com/Seokwoooo/lucian-uxui-prompt" target="_blank" rel="noopener"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.01 8.01 0 0 0 16 8c0-4.42-3.58-8-8-8z"/></svg><span>GitHub</span></a></div>
       <p class="g-intro-links"><button class="g-intro-link" type="button" data-open-skill data-i18n="skillBtnLong">에이전트 스킬로 쓰기 →</button></p>
     </div>
@@ -62,6 +62,12 @@ r.setAttribute('lang',l);if(l==='en')r.classList.add('i18n-wait')})();
 
 <div class="g-bar" id="bar">
   <div class="g-bar-in">
+    <div class="g-sets" id="sets" role="group" aria-label="컬렉션" data-i18n-attr="aria-label:sets">
+      <span class="g-sets-pill" aria-hidden="true"></span>
+      <button class="g-set" type="button" data-set="all" aria-pressed="true"><span data-i18n="setAll">전체</span><i>400</i></button>
+      <button class="g-set g-set--new" type="button" data-set="2" aria-pressed="false"><em aria-hidden="true">NEW</em><span data-i18n="setNew">애니메이션</span><i>200</i></button>
+      <button class="g-set" type="button" data-set="1" aria-pressed="false"><span data-i18n="setOld">인터페이스</span><i>200</i></button>
+    </div>
     <nav class="g-cats" id="cats" aria-label="분류" data-i18n-attr="aria-label:cats">
       <span class="g-cats-pill" aria-hidden="true"></span>
     </nav>
@@ -105,7 +111,7 @@ r.setAttribute('lang',l);if(l==='en')r.classList.add('i18n-wait')})();
     <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="4" y="4" width="6.5" height="6.5" rx="1.6"/><rect x="13.5" y="4" width="6.5" height="6.5" rx="1.6"/><rect x="4" y="13.5" width="6.5" height="6.5" rx="1.6"/><rect x="13.5" y="13.5" width="6.5" height="6.5" rx="1.6"/></svg>
     <span data-i18n="backText">그리드</span>
   </button>
-  <div class="g-prog" aria-live="polite"><span id="prog-n">001</span><i><b id="prog-bar"></b></i><span id="prog-t">200</span></div>
+  <div class="g-prog" aria-live="polite"><span id="prog-n">201</span><i><b id="prog-bar"></b></i><span id="prog-t">400</span></div>
   <div class="g-hud-r">
     <button class="g-hud-b g-hud-ic g-auto" type="button" data-auto aria-pressed="true" aria-label="자동 재생">
       <svg viewBox="0 0 24 24" aria-hidden="true"><path class="g-auto-play" d="M8.5 6.2v11.6l9.2-5.8z"/><path class="g-auto-pause" d="M8.5 6.5v11M15.5 6.5v11"/></svg>

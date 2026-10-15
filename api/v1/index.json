@@ -1,9 +1,9 @@
 {
   "name": "Lucian UX/UI Prompt",
   "api": 1,
-  "version": "b999af8337",
-  "updated": "2026-10-12T09:48:11.488Z",
-  "count": 200,
+  "version": "4fd448eb1e",
+  "updated": "2026-10-15T17:55:02.224Z",
+  "count": 400,
   "languages": [
     "en",
     "ko"
@@ -17,8 +17,8 @@
     "tokens": "{lang}/tokens.css"
   },
   "catalogs": {
-    "en": "8226b7f05b",
-    "ko": "8d9fff8598"
+    "en": "34c4b3e61d",
+    "ko": "26bbe93e4d"
   },
   "categories": [
     {
@@ -104,6 +104,84 @@
       "en": "Workflow & Systems",
       "ko": "작업·시스템",
       "count": 25
+    },
+    {
+      "slug": "sections-content",
+      "en": "Sections & Content",
+      "ko": "섹션·콘텐츠",
+      "count": 21
+    },
+    {
+      "slug": "data-motion",
+      "en": "Data Motion",
+      "ko": "데이터 모션",
+      "count": 18
+    },
+    {
+      "slug": "commerce-pricing",
+      "en": "Commerce & Pricing",
+      "ko": "커머스·가격",
+      "count": 18
+    },
+    {
+      "slug": "text-motion",
+      "en": "Text Motion",
+      "ko": "텍스트 모션",
+      "count": 17
+    },
+    {
+      "slug": "social-proof",
+      "en": "Social Proof",
+      "ko": "소셜 증명",
+      "count": 7
+    },
+    {
+      "slug": "navigation",
+      "en": "Navigation",
+      "ko": "내비게이션",
+      "count": 16
+    },
+    {
+      "slug": "forms-input",
+      "en": "Forms & Input",
+      "ko": "폼·입력",
+      "count": 15
+    },
+    {
+      "slug": "hero-backgrounds",
+      "en": "Hero & Backgrounds",
+      "ko": "히어로·배경",
+      "count": 18
+    },
+    {
+      "slug": "app-screens",
+      "en": "App Screens",
+      "ko": "앱 화면",
+      "count": 20
+    },
+    {
+      "slug": "scroll-motion",
+      "en": "Scroll Motion",
+      "ko": "스크롤 모션",
+      "count": 17
+    },
+    {
+      "slug": "cursor-hover",
+      "en": "Cursor & Hover",
+      "ko": "커서·호버",
+      "count": 8
+    },
+    {
+      "slug": "site-builder-tools",
+      "en": "Site Builder Tools",
+      "ko": "빌더 도구",
+      "count": 16
+    },
+    {
+      "slug": "promos-rewards",
+      "en": "Promos & Rewards",
+      "ko": "프로모션·보상",
+      "count": 9
     }
   ]
 }

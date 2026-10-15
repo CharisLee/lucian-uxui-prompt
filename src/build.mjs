@@ -1,6 +1,6 @@
 // lucianLabs UI 요소 갤러리 빌드
 // 실행: node prompt-uxui/src/build.mjs
-// 입력: src/tokens.css, src/elements/NNN-slug.html (요소 200개), src/gallery/{index.html,gallery.css,gallery.js,i18n-core.js}
+// 입력: src/tokens.css, src/elements/NNN-slug.html (요소 400개: 001~200 인터페이스, 201~400 애니메이션), src/gallery/{index.html,gallery.css,gallery.js,i18n-core.js}
 // 요소 파일 머리: <!-- @meta {...} --> 필수, <!-- @demo [...] --> 자동 재생 시연, <!-- @en {...} --> 영어 제목·설명·번역 목록
 // 출력: prompt-uxui/prompt-uxui-lab/index.html (단일 파일, 모든 코드를 인라인으로 포함)
 import { readFileSync, readdirSync, writeFileSync, mkdirSync } from 'node:fs';
@@ -29,10 +29,26 @@ const CATEGORIES = {
   '문서·데이터 편집': ['#3D8BFF', '#22C3A6'],
   '분석·데이터': ['#EAB308', '#FF6B8B'],
   '작업·시스템': ['#6366F1', '#7B61FF'],
+  // 201~400: 웹사이트를 만들 때 쓰는 애니메이션 컬렉션
+  '텍스트 모션': ['#F43F5E', '#8B5CF6'],
+  '히어로·배경': ['#6366F1', '#14B8A6'],
+  '내비게이션': ['#0EA5E9', '#6366F1'],
+  '스크롤 모션': ['#0EA5E9', '#A855F7'],
+  '섹션·콘텐츠': ['#8B5CF6', '#EC4899'],
+  '소셜 증명': ['#F59E0B', '#EC4899'],
+  '커머스·가격': ['#F97316', '#EAB308'],
+  '폼·입력': ['#22C55E', '#06B6D4'],
+  '앱 화면': ['#6366F1', '#7B61FF'],
+  '빌더 도구': ['#0891B2', '#22C55E'],
+  '커서·호버': ['#E11D48', '#3D8BFF'],
+  '프로모션·보상': ['#F59E0B', '#EF4444'],
+  '데이터 모션': ['#10B981', '#6366F1'],
 };
 const ALIAS = { '메뉴·내비': '메뉴·탭', '탭': '메뉴·탭' };
 const SHAPES = ['square', 'tall'];
-const EXPECTED = 200;
+const EXPECTED = 400;
+// 컬렉션: 1은 처음 공개한 인터페이스 200개, 2는 새로 더한 애니메이션 200개입니다
+const setOf = (id) => (+id > 200 ? 2 : 1);
 
 const errors = [];
 const warns = [];
@@ -102,6 +118,9 @@ for (const file of files) {
     .map((s) => s.trim())
     .filter((s) => s && !s.includes(`.u${id}`) && !/^(from|to|\d+%)$/.test(s));
   if (bad.length) errors.push(`${file}: 접두사 없는 선택자 ${bad.slice(0, 3).join(' | ')}`);
+  // @property는 문서 전체에 등록되므로, 이름이 겹치면 다른 요소의 같은 변수까지 타입이 바뀝니다(예: --a를 각도로 등록하면 색 변수 --a가 깨짐)
+  const props = (css.match(/@property\s+--[\w-]+/g) || []).filter((p) => !p.includes(`--u${id}-`));
+  if (props.length) errors.push(`${file}: @property 이름은 --u${id}- 로 시작해야 합니다: ${props.join(', ')}`);
 
   // 영어판: 주석을 지우고 번역 목록을 적용한 결과에 한글이 남으면 안 됩니다
   if (!en) (STRICT ? errors : warns).push(`${file}: @en 없음`);
@@ -128,8 +147,11 @@ for (const file of files) {
   const [h1, h2] = CATEGORIES[category] || ['#7B61FF', '#3D8BFF'];
   items.push({
     id, slug,
+    set: setOf(id),
     title: meta.title,
     category,
+    // 분류 칩을 늘어놓는 순서(CATEGORIES에 적은 차례)
+    ci: Object.keys(CATEGORIES).indexOf(category),
     summary: meta.summary,
     hint: meta.hint || '',
     shape,
@@ -145,7 +167,23 @@ for (const file of files) {
   });
 }
 
-// UX_PARTIAL=1 이면 작성 중인 부분 빌드를 허용합니다. 최종 빌드에서는 반드시 200개여야 합니다.
+// 컬렉션 안에서 보여 줄 순서(order.json): 완성도가 높은 요소를 먼저 놓습니다. 목록에 없는 요소는 번호순으로 뒤에 붙습니다
+const orderSrc = JSON.parse(readFileSync(join(here, 'order.json'), 'utf8'));
+for (const [set, list] of Object.entries(orderSrc)) {
+  if (set.startsWith('_')) continue;
+  const seen = new Set();
+  list.forEach((id, n) => {
+    if (seen.has(id)) errors.push(`order.json: ${id}가 두 번 있습니다`);
+    seen.add(id);
+    const it = items.find((x) => x.id === id);
+    if (!it) { if (!process.env.UX_PARTIAL) errors.push(`order.json: 없는 요소 ${id}`); return; }
+    if (String(it.set) !== set) errors.push(`order.json: ${id}는 컬렉션 ${it.set}입니다`);
+    it.rank = n;
+  });
+  if (!process.env.UX_PARTIAL) items.filter((x) => String(x.set) === set && !seen.has(x.id)).forEach((x) => errors.push(`order.json: ${x.id}가 순서에 빠졌습니다`));
+}
+
+// UX_PARTIAL=1 이면 작성 중인 부분 빌드를 허용합니다. 최종 빌드에서는 반드시 400개여야 합니다.
 if (!process.env.UX_PARTIAL && items.length !== EXPECTED) errors.push(`요소 ${items.length}개 (목표 ${EXPECTED})`);
 if (warns.length) console.warn('참고:\n' + warns.map((w) => ' - ' + w).join('\n'));
 if (errors.length) {
@@ -163,7 +201,8 @@ const data = JSON.stringify({ tokens, items }).replace(/<\//g, '<\\/');
 
 // 스크립트가 꺼져도 목록이 보이도록 타일의 제목 구조를 미리 HTML로 넣습니다. 스크립트가 켜지면 다시 그립니다
 const escH = (s) => String(s).replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[c]);
-const staticTiles = items.map((it) =>
+const byShow = (a, b) => (b.set - a.set) || ((a.rank ?? 1e9) - (b.rank ?? 1e9)) || a.id.localeCompare(b.id);
+const staticTiles = items.slice().sort(byShow).map((it) =>
   `<article class="g-tile" style="--h:${it.hue};--h2:${it.hue2}"><p class="g-cap"><b>${it.id}</b><span>${escH(it.title)}</span></p></article>`).join('');
 
 const page = galleryHtml

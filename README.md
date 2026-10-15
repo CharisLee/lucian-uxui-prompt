@@ -2,9 +2,9 @@
 
 # Lucian UX/UI Prompt
 
-![Lucian UX/UI Prompt: 200 interactive UI elements](.github/cover.png)
+![Lucian UX/UI Prompt: 400 interactive UI elements](.github/cover.png)
 
-200 interactive UI elements you can try live, then take into your project as an AI prompt or as working code. Every element supports light and dark themes, pointer, touch and keyboard input, and reduced motion. No dependencies.
+400 interactive UI elements you can try live, then take into your project as an AI prompt or as working code: 200 interface parts, from buttons and charts to full app screens, and 200 website sections and animations, from heroes and pricing to scroll and text motion. Every element supports light and dark themes, pointer, touch and keyboard input, and reduced motion. No dependencies.
 
 **Live gallery: [lucianlabs.dev/uxui-prompt](https://lucianlabs.dev/uxui-prompt/)**
 
